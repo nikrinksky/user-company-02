@@ -26,11 +26,7 @@ eureka:
     hostname: ${HOSTNAME:localhost}
     preferIpAddress: true
 
-#management:
-#  endpoint:
-#    health:
-#      show-details: always
-#  endpoints:
-#    web:
-#      exposure:
-#        include: health,gateway
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.cloud: DEBUG

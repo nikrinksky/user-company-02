@@ -42,10 +42,18 @@ public class CompanyController {
         return companyService.getAllCompaniesWithUsers();
     }
 
+    // Получить компанию с сотрудниками 2-й способ
+    @GetMapping("/{id}/with-users")
+    public CompanyWithUsersResponse getCompanyWithUsers_W(@PathVariable Long id) {
+        return companyService.getCompanyWithUsers_2(id);
+    }
+
     @GetMapping("/not-user/{id}")
     public CompanyResponseDTO getCompany(@PathVariable Long id) {
         return companyService.getCompany(id);
     }
+//
+    // Получить компанию с сотрудниками
     @GetMapping("/{id}")
     public CompanyResponseDTO getCompanyWithUsers(@PathVariable Long id) {
         return companyService.getCompanyWithUsers(id);
@@ -55,6 +63,8 @@ public class CompanyController {
 //    public CompanyResponseDTO createCompany(@RequestBody CompanyRequestDTO request) {
 //        return companyService.createCompany(request);
 //    }
+
+    // Создать компанию пока без сотрудников
     @PostMapping
     public ResponseEntity<CompanyResponseDTO> createCompany(
             @Valid @RequestBody CompanyRequestDTO request) {
@@ -74,12 +84,5 @@ public class CompanyController {
     public void deleteCompany(@PathVariable Long id) {
         companyService.deleteById(id);
     }
-//
-//    // Эндпоинт с данными о пользователях
-//    @GetMapping("/{id}/with-users")
-//    public CompanyWithUsersResponse getCompanyWithUsers(@PathVariable Long id) {
-//        Company company = companyRepository.findById(id).orElseThrow();
-//        List<UserDTO> users = userClient.getUsersByCompanyId(id);  // Запрос к user-service
-//        return CompanyWithUsersResponse.fromCompany(company, users);
-//    }
+
 }

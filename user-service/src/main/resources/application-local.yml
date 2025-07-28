@@ -1,5 +1,5 @@
 server:
-  port: 8081  # Уникальный порт для company-service
+  port: 8081  # Уникальный порт для user-service
 
 spring:
   application:
@@ -18,6 +18,11 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
+  cloud:
+    loadbalancer:
+      cache:
+        enabled: false
+
 eureka:
   client:
     serviceUrl:
@@ -30,10 +35,22 @@ feign:
     config:
       default:
         connectTimeout: 5000
-        readTimeout: 5000
+        readTimeout: 30000
         loggerLevel: basic
+      company-service: # Можно указать для конкретного сервиса
+        connectTimeout: 10000
+        readTimeout: 60000
 
 company:
   service:
     url: http://localhost:8082
 #    url: http://company-service:8082
+
+logging:
+  level:
+    org.springframework.cloud.openfeign: DEBUG
+    org.springframework.cloud: DEBUG
+    ru.nikrink.user-service: DEBUG  # Ваш пакет (если нужно)
+    feign: DEBUG
+    org.springframework.web: DEBUG
+

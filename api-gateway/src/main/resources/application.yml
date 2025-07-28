@@ -34,3 +34,8 @@ management:
     web:
       exposure:
         include: health,gateway
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.cloud: DEBUG

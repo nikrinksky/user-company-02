@@ -7,12 +7,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(
-        name = "user-service",
-        url = "${user.service.url:http://localhost:8081}",
-        fallbackFactory = UserClientFallbackFactory.class
-)
+@FeignClient(name = "user-service", url = "${user.service.url}", path = "/api/users")
 public interface UserClient {
-    @GetMapping("/api/users/company/{companyId}")
+
+    @GetMapping("/company/{companyId}")
     List<UserDTO> getUsersByCompanyId(@PathVariable Long companyId);
 }

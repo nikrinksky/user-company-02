@@ -13,6 +13,11 @@ spring:
       connection-timeout: 60000
       initialization-fail-timeout: 60000
 
+  cloud:
+    loadbalancer:
+      cache:
+        enabled: false
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -38,6 +43,11 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
+    org.springframework.cloud.openfeign: DEBUG
+    org.springframework.cloud: DEBUG
+    ru.nikrink.user-service: DEBUG  # Ваш пакет (если нужно)
+    feign: DEBUG
+    org.springframework.web: DEBUG
 
 eureka:
   client:

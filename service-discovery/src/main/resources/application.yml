@@ -4,8 +4,8 @@ server:
 spring:
   application:
     name: discovery-service
-#  profiles:
-#    active: eureka-server
+  profiles:
+    active: eureka-server
   cloud:
     config:
       enabled: false
@@ -19,19 +19,3 @@ eureka:
     fetch-registry: false
     service-url:
       defaultZone: http://${eureka.instance.hostname}:8761/eureka/
-
-#eureka:
-#  instance:
-#    hostname: discovery-service
-#  client:
-#    registerWithEureka: false
-#    fetchRegistry: false
-
-#spring:
-#  main:
-#    allow-bean-definition-overriding: true
-#spring:
-#  main:
-#    allow-circular-references: true
-#  autoconfigure:
-#    exclude: org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration

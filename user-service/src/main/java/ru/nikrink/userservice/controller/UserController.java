@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import ru.nikrink.userservice.dto.UserRequestDTO;
 import ru.nikrink.userservice.dto.UserResponseDTO;
 import ru.nikrink.userservice.dto.UserWithCompanyDTO;
-import ru.nikrink.userservice.model.User;
-import ru.nikrink.userservice.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 import ru.nikrink.userservice.service.UserService;
 

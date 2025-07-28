@@ -1,13 +1,12 @@
 package ru.nikrink.userservice.service;
 
 import feign.FeignException;
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import ru.nikrink.userservice.client.CompanyClient;
+import ru.nikrink.userservice.dto.CompanyDTO;
 import ru.nikrink.userservice.dto.UserRequestDTO;
 import ru.nikrink.userservice.dto.UserResponseDTO;
 import ru.nikrink.userservice.dto.UserWithCompanyDTO;
@@ -20,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-//    private final ModelMapper modelMapper;
     private final CompanyClient companyClient;
 
 //    public List<UserResponseDTO> findByCompanyId(Long companyId) {
@@ -29,21 +27,48 @@ public class UserService {
 //                .toList();
 //    }
 
+//    public List<UserWithCompanyDTO> getUsersByCompanyId(Long companyId) {
+//        // 1. Получаем пользователей из БД
+//        List<User> users = userRepository.findByCompanyId(companyId);
+//        log.info("Found users: {}", users.size());
+//        // 2. Запрашиваем данные компании из company-service
+//        CompanyDTO company = companyClient.getCompanyById(companyId);
+//
+//        // 3. Преобразуем User + CompanyDTO → UserWithCompanyDTO
+//        return users.stream()
+//                .map(user -> new UserWithCompanyDTO(
+//                        user.getId(),
+//                        user.getFirstName(),
+//                        user.getLastName(),
+//                        user.getPhoneNumber(),
+//                        new CompanyDTO(company.id(), company.name(), company.budget())
+//                ))
+//                .toList();
+//    }
+
+    // Второй вариант
     public List<UserWithCompanyDTO> getUsersByCompanyId(Long companyId) {
-        // 1. Получаем пользователей из БД
+        // 1. Асинхронно получаем пользователей и данные компании
         List<User> users = userRepository.findByCompanyId(companyId);
         log.info("Found users: {}", users.size());
-        // 2. Запрашиваем данные компании из company-service
-        CompanyClient.CompanyDTO company = companyClient.getCompanyById(companyId);
 
-        // 3. Преобразуем User + CompanyDTO → UserWithCompanyDTO
+        CompanyDTO company;
+        try {
+            company = companyClient.getCompanyById(companyId);  // Вызов Feign-клиента
+        } catch (FeignException e) {
+            log.error("Error fetching company: {}", e.getMessage());
+            company = new CompanyDTO(null, "Unknown", 0.0);  // Fallback
+        }
+
+        // 2. Преобразуем данные
+        CompanyDTO finalCompany = company;
         return users.stream()
                 .map(user -> new UserWithCompanyDTO(
                         user.getId(),
                         user.getFirstName(),
                         user.getLastName(),
                         user.getPhoneNumber(),
-                        new CompanyClient.CompanyDTO(company.id(), company.name(), company.budget())
+                        finalCompany
                 ))
                 .toList();
     }
@@ -117,15 +142,4 @@ public class UserService {
         return user;
     }
 
-
-    //  временный код для проверки Feign Client
-//    @PostConstruct
-//    public void init() {
-//        try {
-//            CompanyClient.Company company = companyClient.getCompany(1L);
-//            System.out.println("Feign Client работает! Получена компания: " + company.name());
-//        } catch (Exception e) {
-//            System.err.println("Ошибка Feign Client: " + e.getMessage());
-//        }
-//    }
 }

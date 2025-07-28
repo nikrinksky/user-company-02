@@ -39,6 +39,10 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
+    org.springframework.cloud.openfeign: DEBUG
+    org.springframework.cloud: DEBUG
+    ru.nikrink.company-service: DEBUG
+    feign: DEBUG
 
 eureka:
   client:
@@ -48,3 +52,4 @@ eureka:
 user:
   service:
     url: http://user-service:8081  # URL user-service
+

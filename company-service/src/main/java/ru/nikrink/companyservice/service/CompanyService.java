@@ -4,13 +4,13 @@ import feign.FeignException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.nikrink.companyservice.client.UserClient;
 import ru.nikrink.companyservice.dto.CompanyRequestDTO;
 import ru.nikrink.companyservice.dto.CompanyResponseDTO;
+import ru.nikrink.companyservice.dto.CompanyWithUsersResponse;
 import ru.nikrink.companyservice.dto.UserDTO;
 import ru.nikrink.companyservice.model.Company;
 import ru.nikrink.companyservice.repository.CompanyRepository;
@@ -96,6 +96,17 @@ public class CompanyService {
             );
         }
     }
+
+    // Получить компанию с сотрудниками 2-й способ
+    public CompanyWithUsersResponse getCompanyWithUsers_2(Long companyId) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+        List<UserDTO> employees = userClient.getUsersByCompanyId(companyId); // Запрос к user-service
+
+        return CompanyWithUsersResponse.fromCompany(company, employees);
+    }
+
 
     // Создать компанию
     public CompanyResponseDTO createCompany(CompanyRequestDTO request) {

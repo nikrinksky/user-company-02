@@ -11,10 +11,10 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 20           # Увеличьте размер пула
-      connection-timeout: 30000       # Таймаут подключения (ms)
-      leak-detection-threshold: 60000 # Обнаружение "утечек"
-      idle-timeout: 600000            # Макс время бездействия
-      max-lifetime: 1800000           # Макс время жизни соединения
+#      connection-timeout: 30000       # Таймаут подключения (ms)
+#      leak-detection-threshold: 60000 # Обнаружение "утечек"
+#      idle-timeout: 600000            # Макс время бездействия
+#      max-lifetime: 1800000           # Макс время жизни соединения
   jpa:
     hibernate:
       ddl-auto: update
@@ -36,7 +36,12 @@ eureka:
 
 user:
   service:
-     url: http://localhost:8081  # URL user-service
-#     url: http://user-service:8081  # URL user-service
-    # или
+     url: http://localhost:8081
 #    url: http://host.docker.internal:8081 # Для локального тестирования
+
+logging:
+  level:
+    org.springframework.cloud.openfeign: DEBUG
+    org.springframework.cloud: DEBUG
+    ru.nikrink.company-service: DEBUG
+    feign: DEBUG
