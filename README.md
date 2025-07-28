@@ -41,13 +41,16 @@ docker-compose up --build
 Company Service (8082)
 POST /api/companies - Создать компанию
 GET /api/companies/{id} - Получить компанию с сотрудниками
+GET /api/companies/with-users - Получить все компании с сотрудниками
 GET /api/companies - Список всех компаний
 PUT /api/companies/{id} - Обновить компанию
+DELETE /api/companies/{id} - Удалить компанию
 User Service (8081)
 POST /api/users - Создать пользователя
 GET /api/users/company/{companyId} - Пользователи компании
 GET /api/users/{id} - Получить пользователя
-
+PUT /api/users/{id} - Обновить пользователя
+DELETE /api/users/{id} - Удалить пользователя 
 🛠 Технологии
 Backend:
 Spring Boot 3.2
