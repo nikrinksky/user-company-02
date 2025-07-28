@@ -4,12 +4,17 @@
 
 ## 📦 Состав системы
 user-company-02/
+
 ├── company-service/ # Сервис управления компаниями
+
 ├── user-service/ # Сервис управления пользователями
+
 ├── api-gateway/ # API Gateway (Spring Cloud Gateway)
+
 ├── service-discovery/ # Сервер Eureka для регистрации сервисов
-├── config-service/ # Централизованная конфигурация
+
 └── docker-compose.yml # Конфигурация Docker
+
 ## 🚀 Запуск системы
 
 ### Требования
