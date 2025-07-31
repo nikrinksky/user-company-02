@@ -38,8 +38,8 @@ java -jar api-gateway/target/*.jar
 docker-compose up --build
 
 🌐 API Endpoints
-Company Service (8082)
-
+Company Service (8082):http://localhost:8082
+или через api-gateway (8089): http://localhost:8089
 GET /api/companies/{id} - Получить компанию с сотрудниками
 GET /api/companies/with-users - Получить все компании с сотрудниками
 GET /api/companies - Получить все компании (без сотрудников)
@@ -48,7 +48,8 @@ POST /api/companies - Создать компанию
 PUT /api/companies/{id} - Обновить компанию
 DELETE /api/companies/{id} - Удалить компанию
 
-User Service (8081)
+User Service (8081):http://localhost:8081
+или через api-gateway (8089): http://localhost:8089
 GET /api/users/company/{companyId} -  Получить всех пользователей одной компании с данными о компании
 GET /api/users/company - Получить всех пользователей с данными компаниях
 GET /api/users/{id} - Получить пользователя только с id компании
