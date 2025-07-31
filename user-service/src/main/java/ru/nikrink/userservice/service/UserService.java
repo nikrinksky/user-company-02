@@ -14,6 +14,7 @@ import ru.nikrink.userservice.model.User;
 import ru.nikrink.userservice.repository.UserRepository;
 
 import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -21,32 +22,35 @@ public class UserService {
     private final UserRepository userRepository;
     private final CompanyClient companyClient;
 
-//    public List<UserResponseDTO> findByCompanyId(Long companyId) {
-//        return userRepository.findByCompanyId(companyId).stream()
-//                .map(this::convertToDTO)
-//                .toList();
-//    }
 
-//    public List<UserWithCompanyDTO> getUsersByCompanyId(Long companyId) {
-//        // 1. Получаем пользователей из БД
-//        List<User> users = userRepository.findByCompanyId(companyId);
-//        log.info("Found users: {}", users.size());
-//        // 2. Запрашиваем данные компании из company-service
-//        CompanyDTO company = companyClient.getCompanyById(companyId);
-//
-//        // 3. Преобразуем User + CompanyDTO → UserWithCompanyDTO
-//        return users.stream()
-//                .map(user -> new UserWithCompanyDTO(
-//                        user.getId(),
-//                        user.getFirstName(),
-//                        user.getLastName(),
-//                        user.getPhoneNumber(),
-//                        new CompanyDTO(company.id(), company.name(), company.budget())
-//                ))
-//                .toList();
-//    }
+    // Возвращаем всех пользователей и данные их компаний
+    public List<UserWithCompanyDTO> getAllUsersWithCompany() {
+        List<User> users = userRepository.findAll();
+        log.info("Found users: {}", users.size());
 
-    // Второй вариант
+        return users.stream()
+                .map(user -> {
+                    CompanyDTO company = null;
+                    try {
+                        company = companyClient.getCompanyById(user.getCompanyId());
+                    } catch (FeignException e) {
+                        log.error("Error fetching company: {}", e.getMessage());
+                        company = new CompanyDTO(null, "Пока не работает ни в одной компании", 0.0);  // Fallback
+                    }
+                    return new UserWithCompanyDTO(
+                            user.getId(),
+                            user.getFirstName(),
+                            user.getLastName(),
+                            user.getPhoneNumber(),
+                            company
+                    );
+                })
+                .toList();
+
+    }
+
+
+    // Возвращаем пользователей одной компании с данными о компании
     public List<UserWithCompanyDTO> getUsersByCompanyId(Long companyId) {
         // 1. Асинхронно получаем пользователей и данные компании
         List<User> users = userRepository.findByCompanyId(companyId);
@@ -54,7 +58,8 @@ public class UserService {
 
         CompanyDTO company;
         try {
-            company = companyClient.getCompanyById(companyId);  // Вызов Feign-клиента
+            // New временно убрал getCompanyById в вызове Feign-клиента
+            company = companyClient.getCompanyByIdNoUsers(companyId);  // Вызов Feign-клиента
         } catch (FeignException e) {
             log.error("Error fetching company: {}", e.getMessage());
             company = new CompanyDTO(null, "Unknown", 0.0);  // Fallback
@@ -73,19 +78,21 @@ public class UserService {
                 .toList();
     }
 
+    // Возвращаем всех пользователей только с id компании
     public List<UserResponseDTO> findAll() {
         return userRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .toList();
     }
 
+    // Возвращаем пользователя только с id компании
     public UserResponseDTO findById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
         return convertToDTO(user);
     }
 
-    // Изменяем метод save для приёма DTO
+    // Создаем пользователя
     public UserResponseDTO save(UserRequestDTO userRequestDTO) {
         // Преобразуем DTO в Entity
         User user = convertToEntity(userRequestDTO);
@@ -96,6 +103,7 @@ public class UserService {
 
     }
 
+    // Обновляем пользователя
     public UserResponseDTO update(Long id, UserRequestDTO userRequestDTO) {
         // 1. Находим пользователя
         User existingUser = userRepository.findById(id)
@@ -114,6 +122,7 @@ public class UserService {
         return convertToDTO(updatedUser);
     }
 
+    // Удаляем пользователя
     public void deleteById(Long id) {
         if (!userRepository.existsById(id)) {
             throw new EntityNotFoundException("User not found with id: " + id);

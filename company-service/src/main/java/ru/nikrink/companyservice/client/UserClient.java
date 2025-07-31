@@ -12,4 +12,7 @@ public interface UserClient {
 
     @GetMapping("/company/{companyId}")
     List<UserDTO> getUsersByCompanyId(@PathVariable Long companyId);
+
+    @GetMapping("/api/users/{id}")
+    UserDTO getUser(@PathVariable Long id);
 }

@@ -8,15 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.nikrink.companyservice.client.UserClient;
-import ru.nikrink.companyservice.dto.CompanyRequestDTO;
-import ru.nikrink.companyservice.dto.CompanyResponseDTO;
-import ru.nikrink.companyservice.dto.CompanyWithUsersResponse;
-import ru.nikrink.companyservice.dto.UserDTO;
+import ru.nikrink.companyservice.dto.*;
 import ru.nikrink.companyservice.model.Company;
 import ru.nikrink.companyservice.repository.CompanyRepository;
 
 import java.util.Collections;
 import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -25,7 +23,7 @@ public class CompanyService {
 
     private final UserClient userClient;  // Feign-клиент к user-service
 
-    // Получить все компании (без сотрудников)
+    // Вернуть все компании (без сотрудников)
     public List<CompanyResponseDTO> getAllCompanies() {
         return companyRepository.findAll().stream()
                 .map(company -> new CompanyResponseDTO(
@@ -37,7 +35,7 @@ public class CompanyService {
                 .toList();
     }
 
-    // Получить компанию по id (без сотрудников)
+    // Вернуть компанию по id (без сотрудников)
     public CompanyResponseDTO getCompany(Long id) {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Company not found"));
@@ -51,7 +49,7 @@ public class CompanyService {
         );
     }
 
-    // Получить все компании с сотрудниками
+    // Вернуть все компании с сотрудниками
     public List<CompanyResponseDTO> getAllCompaniesWithUsers() {
         List<Company> companies = companyRepository.findAll();
         return companies.stream()
@@ -67,7 +65,7 @@ public class CompanyService {
                 .toList();
     }
 
-    // Получить компанию с сотрудниками
+    // Вернуть компанию с сотрудниками
     public CompanyResponseDTO getCompanyWithUsers(Long id) {
         try {
             Company company = companyRepository.findById(id)
@@ -97,18 +95,18 @@ public class CompanyService {
         }
     }
 
-    // Получить компанию с сотрудниками 2-й способ
-    public CompanyWithUsersResponse getCompanyWithUsers_2(Long companyId) {
-        Company company = companyRepository.findById(companyId)
+    // New Вернуть компанию без сотрудников и вообще без списка сотрудников
+    public CompanyDTO getCompanyByIdNoUsers(Long id) {
+        Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Company not found"));
-
-        List<UserDTO> employees = userClient.getUsersByCompanyId(companyId); // Запрос к user-service
-
-        return CompanyWithUsersResponse.fromCompany(company, employees);
+        return new CompanyDTO(
+                company.getId(),
+                company.getName(),
+                company.getBudget()
+        );
     }
 
-
-    // Создать компанию
+    // Создать компанию пока без сотрудников
     public CompanyResponseDTO createCompany(CompanyRequestDTO request) {
         Company company = new Company();
         company.setName(request.name());
@@ -143,10 +141,13 @@ public class CompanyService {
         );
     }
 
+    // Удалить компанию
     public void deleteById(Long id) {
         if (!companyRepository.existsById(id)) {
             throw new EntityNotFoundException("Company not found" + id);
         }
         companyRepository.deleteById(id);
     }
+
+
 }

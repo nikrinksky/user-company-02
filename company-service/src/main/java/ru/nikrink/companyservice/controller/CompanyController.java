@@ -3,13 +3,9 @@ package ru.nikrink.companyservice.controller;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import ru.nikrink.companyservice.dto.CompanyDTO;
 import ru.nikrink.companyservice.dto.CompanyRequestDTO;
 import ru.nikrink.companyservice.dto.CompanyResponseDTO;
-import ru.nikrink.companyservice.dto.CompanyWithUsersResponse;
-import ru.nikrink.companyservice.model.Company;
-import ru.nikrink.companyservice.repository.CompanyRepository;
-import ru.nikrink.companyservice.client.UserClient;
-import ru.nikrink.companyservice.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.nikrink.companyservice.service.CompanyService;
@@ -21,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CompanyController {
     private final CompanyService companyService;
-    private final UserClient userClient;  // Feign Client для запросов к user-service
 
     // Временно для теста.
     @GetMapping("/test")
@@ -42,27 +37,23 @@ public class CompanyController {
         return companyService.getAllCompaniesWithUsers();
     }
 
-    // Получить компанию с сотрудниками 2-й способ
-    @GetMapping("/{id}/with-users")
-    public CompanyWithUsersResponse getCompanyWithUsers_W(@PathVariable Long id) {
-        return companyService.getCompanyWithUsers_2(id);
-    }
-
+    // Получить компанию без сотрудников
     @GetMapping("/not-user/{id}")
     public CompanyResponseDTO getCompany(@PathVariable Long id) {
         return companyService.getCompany(id);
     }
-//
+
     // Получить компанию с сотрудниками
     @GetMapping("/{id}")
     public CompanyResponseDTO getCompanyWithUsers(@PathVariable Long id) {
         return companyService.getCompanyWithUsers(id);
     }
 
-    //    @PostMapping
-//    public CompanyResponseDTO createCompany(@RequestBody CompanyRequestDTO request) {
-//        return companyService.createCompany(request);
-//    }
+    // New вернуть компанию без сотрудников и вообще без списка сотрудников
+    @GetMapping("/no-users/{id}")
+    public CompanyDTO getCompanyByIdNoUsers(@PathVariable Long id) {
+        return companyService.getCompanyByIdNoUsers(id);
+    }
 
     // Создать компанию пока без сотрудников
     @PostMapping
@@ -72,6 +63,7 @@ public class CompanyController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCompany);
     }
 
+    // Обновить компанию
     @PutMapping("/{id}")
     public CompanyResponseDTO updateCompany(
             @PathVariable Long id,
@@ -80,6 +72,7 @@ public class CompanyController {
         return companyService.updateCompany(id, request);
     }
 
+    // Удалить компанию
     @DeleteMapping("/{id}")
     public void deleteCompany(@PathVariable Long id) {
         companyService.deleteById(id);

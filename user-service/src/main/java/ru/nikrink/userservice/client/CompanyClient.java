@@ -5,15 +5,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.nikrink.userservice.dto.CompanyDTO;
 
-import java.util.List;
 
-@FeignClient(name = "company-service", url = "${company.service.url}", path = "/api/companies")
+
+@FeignClient(name = "company-service", path = "/api/companies", url = "${company.service.url}")
 public interface CompanyClient {
 
-    @GetMapping("/api/companies/{id}")
+    @GetMapping("/{id}")
     CompanyDTO getCompanyById(@PathVariable Long id);
 
-    @GetMapping("/api/companies")
-    List<CompanyDTO> getAllCompanies();
+    //
+    @GetMapping("/no-users/{id}")
+    CompanyDTO getCompanyByIdNoUsers(@PathVariable Long id);
 
 }
