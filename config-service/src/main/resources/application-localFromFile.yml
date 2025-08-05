@@ -1,0 +1,30 @@
+## config-service/application.yml
+#server:
+#  port: 8888  # Важно: именно этот порт используется в контейнере
+#
+#spring:
+#  application:
+#    name: config-service
+#  profiles:
+#    active: native  # Активируем native профиль
+#  cloud:
+#    config:
+#      server:
+#        native:
+#          search-locations:
+#            - classpath:/configs/ # путь
+#
+#
+##  cloud:
+##    compatibility-verifier:
+##      enabled: false
+#
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://localhost:8761/eureka/
+#    healthcheck:
+#      enabled: true
+#  instance:
+#    hostname: ${HOSTNAME:localhost}
+#    preferIpAddress: true

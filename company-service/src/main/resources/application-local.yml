@@ -15,6 +15,11 @@ spring:
 #      leak-detection-threshold: 60000 # Обнаружение "утечек"
 #      idle-timeout: 600000            # Макс время бездействия
 #      max-lifetime: 1800000           # Макс время жизни соединения
+#  cloud:
+#    config:
+#      uri: http://config-service:8888
+#      fail-fast: true
+
   jpa:
     hibernate:
       ddl-auto: update

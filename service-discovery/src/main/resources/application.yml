@@ -6,9 +6,10 @@ spring:
     name: discovery-service
   profiles:
     active: eureka-server
-  cloud:
-    config:
-      enabled: false
+#  cloud:
+#    config:
+#      uri: http://config-service:8888
+#      fail-fast: true
 
 eureka:
   instance:

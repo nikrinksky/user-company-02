@@ -18,10 +18,13 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
-  cloud:
-    loadbalancer:
-      cache:
-        enabled: false
+#  cloud:
+#    loadbalancer:
+#      cache:
+#        enabled: false
+#    config:
+#      uri: http://config-service:8888
+#      fail-fast: true
 
 eureka:
   client:

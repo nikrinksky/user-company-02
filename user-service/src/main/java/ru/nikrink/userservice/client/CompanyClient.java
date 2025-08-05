@@ -7,7 +7,7 @@ import ru.nikrink.userservice.dto.CompanyDTO;
 
 
 
-@FeignClient(name = "company-service", path = "/api/companies", url = "${company.service.url}")
+@FeignClient(name = "company-service", path = "/api/companies", url = "http://localhost:8082")
 public interface CompanyClient {
 
     @GetMapping("/{id}")

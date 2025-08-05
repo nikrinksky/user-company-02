@@ -44,6 +44,24 @@ services:
       - "8761:8761"
     networks:
       - backend
+    depends_on:
+      - config-service  # Config Server должен стартовать первым
+
+
+
+    # Config Server (локальные конфиги)
+  config-service:
+    build:
+      context: ./config-service
+    ports:
+      - "8888:8888"  # Проброс портов
+    volumes:
+      - ./config-service/src/main/resources/configs:/configs
+    environment:
+      - SPRING_PROFILES_ACTIVE=native
+      - SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCHLOCATIONS=file:/configs/ # активация профиля
+    depends_on:
+      - service-discovery
 
   # API Gateway
   api-gateway:
@@ -52,8 +70,10 @@ services:
     container_name: api-gateway
     ports:
       - "8089:8089"
-
+    environment:
+      SPRING_CLOUD_CONFIG_URI: http://config-service:8888  # Подключаем Config Server
     depends_on:
+      - config-service
       - discovery-service
       - user-service
       - company-service
@@ -67,8 +87,8 @@ services:
     container_name: user-service
     ports:
       - "8081:8081"
-
     depends_on:
+      - config-service
       - user-db
       - discovery-service
 #      - company-service
@@ -78,6 +98,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://user-db:5432/user_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_CLOUD_CONFIG_URI: http://config-service:8888
 
   # Company Service
   company-service:
@@ -89,7 +110,9 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://company-db:5432/company_db
       - USER_SERVICE_URL=http://user-service:8081
+      - SPRING_CLOUD_CONFIG_URI=http://config-service:8888
     depends_on:
+      - config-service
       - company-db
       - discovery-service
 #      - user-service

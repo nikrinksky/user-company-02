@@ -22,6 +22,7 @@
         <module>service-discovery</module>
         <module>api-gateway</module>
         <module>company-service</module>
+        <module>config-service</module>
     </modules>
 
     <properties>
