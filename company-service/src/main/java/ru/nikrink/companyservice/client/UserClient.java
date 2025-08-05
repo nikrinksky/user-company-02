@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(name = "user-service", url = "${user.service.url}", path = "/api/users")
+//@FeignClient(name = "user-service", url = "${user.service.url}", path = "/api/users") // для локального запуска
+@FeignClient(name = "user-service", url = "http://localhost:8081", path = "/api/users") // для запуска конфигурации через git
 public interface UserClient {
 
     @GetMapping("/company/{companyId}")
