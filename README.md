@@ -26,7 +26,9 @@ user-company-02/
 
 ### 1. Запуск инфраструктуры
 ```bash
-docker-compose up -d postgres redis
+mvn clean install
+docker-compose -p user-company-02 build
+docker-compose -p user-company-02 up -d
 
 2. Сборка и запуск сервисов
 mvn clean package
