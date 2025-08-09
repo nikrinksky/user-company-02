@@ -1,3 +1,4 @@
+#api-gateway/ для дocker-compose.yml без использования config-server
 server:
   port: 8089
 

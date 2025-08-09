@@ -13,6 +13,7 @@ spring:
         native:
           search-locations: file:///E:/01_AvB/02project/user-company-config-repo  # путь
 
+#     fail-on-composite-error: false
 
 #  cloud:
 #    compatibility-verifier:

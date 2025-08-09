@@ -1,10 +1,12 @@
+server:
+  port: 8089 # Уникальный порт для api-gateway для реализации config-service через docker-compose
+
 spring:
   application:
     name: api-gateway
-#  config:
-#    import: 'optional:configserver:'
+  #  config:
+  #    import: 'optional:configserver:'
   cloud:
     config:
-      uri: http://localhost:8888
-
+      uri: http://config-service:8888
 spring.config.import: 'optional:configserver:'

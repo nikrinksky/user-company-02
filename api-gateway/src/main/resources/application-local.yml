@@ -19,15 +19,15 @@ spring:
 #      uri: http://config-service:8888
 #      fail-fast: true
 
-#eureka:
-#  client:
-#    serviceUrl:
-#      defaultZone: http://localhost:8761/eureka/
-#    healthcheck:
-#      enabled: true
-#  instance:
-#    hostname: ${HOSTNAME:localhost}
-#    preferIpAddress: true
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    healthcheck:
+      enabled: true
+  instance:
+    hostname: ${HOSTNAME:localhost}
+    preferIpAddress: true
 
 logging:
   level:

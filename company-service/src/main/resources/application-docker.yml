@@ -1,4 +1,4 @@
-
+#company-service/ для дocker-compose.yml без использования config-server
 server:
   port: 8082  # Уникальный порт для company-service
 

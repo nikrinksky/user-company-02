@@ -1,11 +1,11 @@
 server:
-  port: 8761
+  port: 8761 # Уникальный порт для discovery-service для реализации config-service через docker-compose
 
 spring:
   application:
     name: discovery-service
-  profiles:
-    active: eureka-server
+#  profiles:
+#    active: eureka-server
 #  cloud:
 #    config:
 #      uri: http://config-service:8888

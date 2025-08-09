@@ -37,6 +37,7 @@ services:
 
   # Сервис обнаружения (Eureka)
   discovery-service:
+    restart: always
     build:
       context: ./service-discovery
     container_name: discovery-service
@@ -44,54 +45,80 @@ services:
       - "8761:8761"
     networks:
       - backend
-    depends_on:
-      - config-service  # Config Server должен стартовать первым
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+#    depends_on:
+#      - service-discovery
+
+#      - config-service  # Config Server должен стартовать первым
 
 
 
     # Config Server (локальные конфиги)
   config-service:
+    restart: always
     build:
       context: ./config-service
+    container_name: config-service
     ports:
       - "8888:8888"  # Проброс портов
-    volumes:
-      - ./config-service/src/main/resources/configs:/configs
+#    volumes:
+#      - ./config-service/src/main/resources/configs:/configs
     environment:
-      - SPRING_PROFILES_ACTIVE=native
-      - SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCHLOCATIONS=file:/configs/ # активация профиля
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
+#      - SPRING_PROFILES_ACTIVE=native
+#      - SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCHLOCATIONS=file:/configs/ # активация профиля
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8888/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     depends_on:
-      - service-discovery
+      - discovery-service
+
 
   # API Gateway
   api-gateway:
+    restart: always
     build:
       context: ./api-gateway
     container_name: api-gateway
     ports:
       - "8089:8089"
     environment:
-      SPRING_CLOUD_CONFIG_URI: http://config-service:8888  # Подключаем Config Server
+      SPRING_CLOUD_CONFIG_URI: http://config-service:8888
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
     depends_on:
-      - config-service
-      - discovery-service
-      - user-service
-      - company-service
+      config-service:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+#      - user-service
+#      - company-service
     networks:
       - backend
 
+
   # User Service
   user-service:
+    restart: always
     build:
       context: ./user-service
     container_name: user-service
     ports:
       - "8081:8081"
     depends_on:
-      - config-service
-      - user-db
-      - discovery-service
-#      - company-service
+      config-service:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+#      - user-db
+
     networks:
       - backend
     environment:
@@ -99,22 +126,34 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_CLOUD_CONFIG_URI: http://config-service:8888
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
+
 
   # Company Service
   company-service:
+    restart: always
     build:
       context: ./company-service
     container_name: company-service
     ports:
       - "8082:8082"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://company-db:5432/company_db
-      - USER_SERVICE_URL=http://user-service:8081
-      - SPRING_CLOUD_CONFIG_URI=http://config-service:8888
+      SPRING_DATASOURCE_URL: jdbc:postgresql://company-db:5432/company_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+#      USER_SERVICE_URL: http://user-service:8081
+      SPRING_CLOUD_CONFIG_URI: http://config-service:8888
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
+
     depends_on:
-      - config-service
-      - company-db
-      - discovery-service
+      config-service:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+#      - company-db
+
+
+
 #      - user-service
     networks:
       - backend

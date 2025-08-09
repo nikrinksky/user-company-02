@@ -1,3 +1,4 @@
+#user-service/ для дocker-compose.yml без использования config-server
 server:
   port: 8081  # Уникальный порт для user-service
 
