@@ -15,10 +15,6 @@ spring:
             - classpath:/configs/ # путь
 
 
-#  cloud:
-#    compatibility-verifier:
-#      enabled: false
-
 eureka:
   client:
     serviceUrl:

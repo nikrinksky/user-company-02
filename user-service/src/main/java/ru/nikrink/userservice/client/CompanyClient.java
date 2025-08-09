@@ -7,7 +7,7 @@ import ru.nikrink.userservice.dto.CompanyDTO;
 
 
 
-//@FeignClient(name = "company-service", path = "/api/companies", url = "http://localhost:8082")
+//@FeignClient(name = "company-service", path = "/api/companies", url = "http://localhost:8082") // для локального запуска
 @FeignClient(name = "company-service", path = "/api/companies", url = "http://company-service:8082")
 public interface CompanyClient {
 

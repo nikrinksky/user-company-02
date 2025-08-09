@@ -18,7 +18,4 @@ public class Company {
     private String name;
     private Double budget;
 
-//    @ElementCollection  // Список ID пользователей (хранится в отдельной таблице)
-//    private List<Long> employeeIds = new ArrayList<>();
-
 }

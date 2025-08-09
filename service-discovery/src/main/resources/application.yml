@@ -4,7 +4,7 @@ server:
 spring:
   application:
     name: discovery-service
-#  profiles:
+#  profiles: // Для локального запуска
 #    active: eureka-server
 #  cloud:
 #    config:
