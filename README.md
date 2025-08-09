@@ -13,12 +13,14 @@ user-company-02/
 
 ├── service-discovery/ # Сервер Eureka для регистрации сервисов
 
+├── config-service/ # Сервер запускающий файлы конфигурации
+
 └── docker-compose.yml # Конфигурация Docker
 
 ## 🚀 Запуск системы
 
 ### Требования
-- Java 21
+- Java 17
 - Docker и Docker Compose
 - Maven 3.8+
 
@@ -32,6 +34,7 @@ java -jar service-discovery/target/*.jar
 java -jar company-service/target/*.jar
 java -jar user-service/target/*.jar
 java -jar api-gateway/target/*.jar
+java -jar config-gateway/target/*.jar
 
 
 Или через Docker:
@@ -60,7 +63,7 @@ DELETE /api/users/{id} - Удалить пользователя
 🛠 Технологии
 Backend:
 Spring Boot 3.2
-Spring Cloud (Gateway, Eureka)
+Spring Cloud (Gateway, Eureka, Config)
 Spring Data JPA
 Feign Client
 
