@@ -1,0 +1,22 @@
+server:
+  port: 8761 # Уникальный порт для discovery-service для реализации config-service через docker-compose
+
+spring:
+  application:
+    name: discovery-service
+#  profiles:
+#    active: eureka-server
+#  cloud:
+#    config:
+#      uri: http://config-service:8888
+#      fail-fast: true
+
+eureka:
+  instance:
+    hostname: discovery-service
+    app name: discovery-service
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8761/eureka/
